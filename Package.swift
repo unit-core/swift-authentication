@@ -17,6 +17,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/unit-core/swift-composable-architecture", exact: .init(1, 23, 1)),
+        .package(url: "https://github.com/unit-core/supabase-swift", exact: .init(2, 41, 1)),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -24,7 +25,11 @@ let package = Package(
         .target(
             name: "swift-authentication",
             dependencies: [
-                .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+                .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+                .product(
+                    name: "Supabase", // Auth, Realtime, Postgrest, Functions, or Storage
+                    package: "supabase-swift"
+                )
             ]
         ),
         .testTarget(
