@@ -7,6 +7,7 @@
 
 import Supabase
 import ComposableArchitecture
+import AuthenticationServices
 
 public enum SignInWithAppleError: Error {
     
@@ -22,14 +23,23 @@ public enum SignInWithAppleError: Error {
 @Reducer
 public struct SignInWithAppleReducer {
     
-    @Dependency(\.signInWithAppleClient.signInWithSupabase) var signInWithSupabase
+    @Dependency(\.signInClient.signInWithApple) var signInWithApple
     
     public init() {}
     
     @ObservableState
     public struct State: Equatable {
         
+        var status: StateStatus = .idle
+        
         public init() {}
+    }
+    
+    public enum StateStatus: Equatable {
+        case idle
+        case success
+        case error(SignInWithAppleError)
+        case loading
     }
     
     public enum Action {
@@ -44,35 +54,37 @@ public struct SignInWithAppleReducer {
         Reduce { state, action in
             switch action {
             case let .handleCompletionResult(.success(authorization)):
+                state.status = .loading
                 guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-                    debugPrint("!!! SignInWithAppleError.invalidAuthorizationCredentialType")
+                    state.status = .error(.invalidAuthorizationCredentialType)
                     return .none
                 }
                 guard let identityToken = credential.identityToken else {
-                    debugPrint("!!! SignInWithAppleError.undefinedIdentityToken")
+                    state.status = .error(.undefinedIdentityToken)
                     return .none
                 }
                 guard let identityTokenString = String(data: identityToken, encoding: .utf8) else {
-                    debugPrint("!!! SignInWithAppleError.invalidIdentityToken")
+                    state.status = .error(.invalidIdentityToken)
                     return .none
                 }
                 return .send(.signInWithSupabase(identityTokenString))
             case let .handleCompletionResult(.failure(error)):
-                debugPrint("!!! SignInWithAppleError.systemError")
                 debugPrint("Sign in with Apple failed: \(error.localizedDescription)")
+                state.status = .error(.systemError)
                 return .none
                 
             case let .signInWithSupabase(identityToken):
-                return .run { [identityToken = identityToken, signInWithSupabase] send in
+                return .run { [identityToken = identityToken, signInWithApple] send in
                     await send(.signInWithSupabaseResult(Result {
-                        try await signInWithSupabase(identityToken)
+                        try await signInWithApple(identityToken)
                     }))
                 }
             case .signInWithSupabaseResult(.success):
+                state.status = .success
                 return .none
             case let .signInWithSupabaseResult(.failure(error)):
-                debugPrint("!!! SignInWithAppleError.signInWithSupabaseDidFail")
                 debugPrint(error.localizedDescription)
+                state.status = .error(.signInWithSupabaseDidFail)
                 return .none
             }
         }
@@ -82,7 +94,6 @@ public struct SignInWithAppleReducer {
 // MARK: - Remove below
 
 import SwiftUI
-import AuthenticationServices
 
 struct SignInWithAppleScreenView: View {
     

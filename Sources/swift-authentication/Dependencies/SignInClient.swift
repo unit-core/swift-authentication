@@ -1,0 +1,32 @@
+//
+//  SignInWithAppleClient.swift
+//  SwiftAuthentication
+//
+//  Created by Spectra Esports  on 10. 2. 2026..
+//
+
+import Dependencies
+import DependenciesMacros
+
+@DependencyClient
+struct SignInClient: Sendable {
+    var signInWithApple: @Sendable (_ identityToken: String) async throws -> Void
+}
+
+private enum SignInClientKey: DependencyKey {
+
+    static let liveValue = SignInClient()
+
+    static let previewValue = SignInClient(
+        signInWithApple: { identityToken in }
+    )
+    
+    static let testValue: SignInClient = SignInClient()
+}
+
+extension DependencyValues {
+    var signInClient: SignInClient {
+        get { self[SignInClientKey.self] }
+        set { self[SignInClientKey.self] = newValue }
+    }
+}
