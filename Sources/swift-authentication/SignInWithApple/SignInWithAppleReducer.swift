@@ -9,17 +9,6 @@ import Supabase
 import ComposableArchitecture
 import AuthenticationServices
 
-public enum SignInWithAppleError: Error {
-    
-    case systemError
-    
-    case invalidAuthorizationCredentialType
-    case undefinedIdentityToken
-    case invalidIdentityToken
-    
-    case signInWithSupabaseDidFail
-}
-
 @Reducer
 public struct SignInWithAppleReducer {
     
@@ -44,10 +33,10 @@ public struct SignInWithAppleReducer {
     
     public enum Action {
         
-        case handleCompletionResult(Result<ASAuthorization, any Error>)
+        case handleCompletionResult(Result<AppleAuthorization?, any Error>)
         
-        case signInWithSupabase(_ identityToken: String)
-        case signInWithSupabaseResult(Result<Void, any Error>)
+        case signInWithApple(_ identityToken: String)
+        case signInWithAppleResult(Result<Void, any Error>)
     }
     
     public var body: some Reducer<State, Action> {
@@ -55,11 +44,11 @@ public struct SignInWithAppleReducer {
             switch action {
             case let .handleCompletionResult(.success(authorization)):
                 state.status = .loading
-                guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+                guard let authorization else {
                     state.status = .error(.invalidAuthorizationCredentialType)
                     return .none
                 }
-                guard let identityToken = credential.identityToken else {
+                guard let identityToken = authorization.credential.identityToken else {
                     state.status = .error(.undefinedIdentityToken)
                     return .none
                 }
@@ -67,24 +56,22 @@ public struct SignInWithAppleReducer {
                     state.status = .error(.invalidIdentityToken)
                     return .none
                 }
-                return .send(.signInWithSupabase(identityTokenString))
+                return .send(.signInWithApple(identityTokenString))
             case let .handleCompletionResult(.failure(error)):
-                debugPrint("Sign in with Apple failed: \(error.localizedDescription)")
-                state.status = .error(.systemError)
+                state.status = .error(.systemError(error))
                 return .none
                 
-            case let .signInWithSupabase(identityToken):
+            case let .signInWithApple(identityToken):
                 return .run { [identityToken = identityToken, signInWithApple] send in
-                    await send(.signInWithSupabaseResult(Result {
+                    await send(.signInWithAppleResult(Result {
                         try await signInWithApple(identityToken)
                     }))
                 }
-            case .signInWithSupabaseResult(.success):
+            case .signInWithAppleResult(.success):
                 state.status = .success
                 return .none
-            case let .signInWithSupabaseResult(.failure(error)):
-                debugPrint(error.localizedDescription)
-                state.status = .error(.signInWithSupabaseDidFail)
+            case let .signInWithAppleResult(.failure(error)):
+                state.status = .error(.signInWithAppleDidFail(error))
                 return .none
             }
         }
@@ -103,7 +90,9 @@ struct SignInWithAppleScreenView: View {
         SignInWithAppleButton { (request: ASAuthorizationAppleIDRequest) in
             // request.requestedScopes = [.email, .fullName]
         } onCompletion: { (result: Result<ASAuthorization, any Error>) in
-            store.send(.handleCompletionResult(result))
+            store.send(.handleCompletionResult(
+                result.map({ AppleAuthorization(authorization: $0) })
+            ))
         }
     }
 }
