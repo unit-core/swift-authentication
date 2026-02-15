@@ -5,6 +5,7 @@
 //  Created by Spectra Esports  on 12. 2. 2026..
 //
 
+import SwiftUI
 import ComposableArchitecture
 
 @Reducer
@@ -29,10 +30,12 @@ public struct SignInWithEmailAndPasswordReducer {
         
         var uiState: UIState = .idle
         
+        let invalidColor: Color = .red
+        
         public init() {}
         
         enum Field: String, Hashable {
-            case username, password
+            case email, password
         }
     }
     
@@ -55,6 +58,9 @@ public struct SignInWithEmailAndPasswordReducer {
         
         Reduce { state, action in
             switch action {
+            case .binding(\.email), .binding(\.password):
+                state.uiState = .idle
+                return .none
             case .signIn:
                 guard emailValidator(state.email) else {
                     state.uiState = .error(.invalidEmail)

@@ -13,6 +13,8 @@ public struct SignInWithEmailAndPasswordView: View {
     @ComposableArchitecture.Bindable var store: StoreOf<SignInWithEmailAndPasswordReducer>
     @SwiftUI.FocusState var focusedField: SignInWithEmailAndPasswordReducer.State.Field?
     
+    @SwiftUI.Namespace var animation
+    
     public init(store: StoreOf<SignInWithEmailAndPasswordReducer>) {
         self.store = store
     }
@@ -22,16 +24,22 @@ public struct SignInWithEmailAndPasswordView: View {
             TextField(text: $store.email) {
                 Text(verbatim: "name@example.com")
             }
-            .focused($focusedField, equals: .username)
+            .focused($focusedField, equals: .email)
             .padding(.horizontal)
             .frame(height: 56)
             .background(.secondary.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(store.invalidColor, lineWidth: 1)
+                    .opacity(store.uiState == .error(.invalidEmail) ? 1 : 0)
+            })
             
-            if store.focusedField == .username {
+            if store.uiState == .error(.invalidEmail) {
                 HStack {
                     Text("Latin letters, numbers, and special characters -_.+'! are supported.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(store.invalidColor)
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -56,13 +64,19 @@ public struct SignInWithEmailAndPasswordView: View {
             .padding(.horizontal)
             .frame(height: 56)
             .background(.secondary.opacity(0.2))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(store.invalidColor, lineWidth: 1)
+                    .opacity(store.uiState == .error(.invalidPassword) ? 1 : 0)
+            })
             
             
-            if store.focusedField == .password {
+            if store.uiState == .error(.invalidPassword) {
                 HStack {
                     Text("At least 8 characters long and include an uppercase letter, a lowercase letter, and a number.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(store.invalidColor)
                     Spacer()
                 }
                 .padding(.horizontal)
@@ -82,11 +96,12 @@ public struct SignInWithEmailAndPasswordView: View {
                 }
                 .frame(height: 56)
                 .background(.blue)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
         }
         // Synchronize store focus state and local focus state.
         .bind($store.focusedField, to: $focusedField)
-        .animation(.default, value: store.focusedField)
+        .animation(.default, value: store.uiState)
     }
 }
 
