@@ -19,6 +19,8 @@ public struct SignInWithAppleReducer {
     @ObservableState
     public struct State: Equatable {
         
+        var requestedScopes: [ASAuthorization.Scope]? = [.email, .fullName]
+        
         var status: UIState = .idle
         
         public init() {}

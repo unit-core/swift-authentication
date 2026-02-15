@@ -19,7 +19,7 @@ public struct SignInWithAppleView: View {
     
     public var body: some View {
         AuthenticationServices.SignInWithAppleButton { (request: AuthenticationServices.ASAuthorizationAppleIDRequest) in
-            // request.requestedScopes = [.email, .fullName]
+            request.requestedScopes = store.requestedScopes
         } onCompletion: { (result: Result<AuthenticationServices.ASAuthorization, any Error>) in
             store.send(.handleCompletionResult(
                 result.map({ AppleAuthorization(authorization: $0) })
