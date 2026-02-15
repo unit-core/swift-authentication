@@ -18,12 +18,15 @@ public struct AuthenticationReducer {
         var emailAndPassword: SignInWithEmailAndPasswordReducer.State = .init()
         var apple: SignInWithAppleReducer.State = .init()
         
+        var welcomeText: TypewriterReducer.State = .init(fullText: "Welcome")
+        
         public init() {}
     }
     
     public enum Action {
         case emailAndPassword(SignInWithEmailAndPasswordReducer.Action)
         case apple(SignInWithAppleReducer.Action)
+        case welcomeText(TypewriterReducer.Action)
     }
     
     public var body: some Reducer<State, Action> {
@@ -32,6 +35,9 @@ public struct AuthenticationReducer {
         })
         Scope(state: \.apple, action: \.apple, child: {
             SignInWithAppleReducer()
+        })
+        Scope(state: \.welcomeText, action: \.welcomeText, child: {
+            TypewriterReducer()
         })
     }
 }
@@ -47,6 +53,12 @@ public struct AuthenticationView: View {
     public var body: some View {
         VStack {
             Spacer()
+            TypewriterView(
+                store: store.scope(state: \.welcomeText, action: \.welcomeText)
+            )
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            Spacer()
             SignInWithEmailAndPasswordView(store: store.scope(state: \.emailAndPassword, action: \.emailAndPassword))
             Text("OR")
                 .font(.caption)
@@ -55,6 +67,12 @@ public struct AuthenticationView: View {
                 .frame(height: 56)
         }
         .padding(.horizontal)
+        .onTapGesture(perform: {
+            store.send(.emailAndPassword(.binding(.set(\.focusedField, nil))))
+        })
+        .onAppear(perform: {
+            store.send(.welcomeText(.start))
+        })
     }
 }
 
