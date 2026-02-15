@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import SwiftUI
+import Perception
 
 @Reducer
 public struct AuthenticationReducer {
@@ -37,7 +38,7 @@ public struct AuthenticationReducer {
 
 public struct AuthenticationView: View {
     
-    @ComposableArchitecture.Bindable var store: StoreOf<AuthenticationReducer>
+    @Bindable var store: StoreOf<AuthenticationReducer>
     
     public init(store: StoreOf<AuthenticationReducer>) {
         self.store = store
@@ -63,3 +64,4 @@ public struct AuthenticationView: View {
         reducer: { AuthenticationReducer() }
     ))
 }
+

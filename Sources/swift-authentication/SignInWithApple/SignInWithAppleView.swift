@@ -11,7 +11,7 @@ import ComposableArchitecture
 
 public struct SignInWithAppleView: View {
     
-    @ComposableArchitecture.Bindable var store: StoreOf<SignInWithAppleReducer>
+    @Bindable var store: StoreOf<SignInWithAppleReducer>
     
     public init(store: StoreOf<SignInWithAppleReducer>) {
         self.store = store

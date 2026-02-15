@@ -56,6 +56,51 @@ struct SignInWithEmailAndPasswordReducerTests {
     }
     
     @Test
+    func testSignIn_WithInvalidEmail_And_ResetUiStateAfterEditing() async throws {
+        let store = TestStore(
+            initialState: SignInWithEmailAndPasswordReducer.State.init(),
+            reducer: { SignInWithEmailAndPasswordReducer() },
+            withDependencies: {
+                $0.signInClient.signInWithEmailAndPassword = { _, _ in }
+            }
+        )
+        await store.send(.set(\.email, "@example.com")) {
+            $0.email = "@example.com"
+        }
+        await store.send(.signIn) {
+            $0.uiState = .error(.invalidEmail)
+        }
+        await store.send(.set(\.email, "1")) {
+            $0.email = "1"
+            $0.uiState = .idle
+        }
+    }
+    
+    @Test
+    func testSignIn_WithInvalidPassword_And_ResetUiStateAfterEditing() async throws {
+        let store = TestStore(
+            initialState: SignInWithEmailAndPasswordReducer.State.init(),
+            reducer: { SignInWithEmailAndPasswordReducer() },
+            withDependencies: {
+                $0.signInClient.signInWithEmailAndPassword = { _, _ in }
+            }
+        )
+        await store.send(.set(\.email, "simple@example.com")) {
+            $0.email = "simple@example.com"
+        }
+        await store.send(.set(\.password, "Pass1")) {
+            $0.password = "Pass1"
+        }
+        await store.send(.signIn) {
+            $0.uiState = .error(.invalidPassword)
+        }
+        await store.send(.set(\.password, "1")) {
+            $0.password = "1"
+            $0.uiState = .idle
+        }
+    }
+    
+    @Test
     func testSignIn_WithInvalidPassword_ShouldSetInvalidPasswordError() async throws {
         let store = TestStore(
             initialState: SignInWithEmailAndPasswordReducer.State.init(),

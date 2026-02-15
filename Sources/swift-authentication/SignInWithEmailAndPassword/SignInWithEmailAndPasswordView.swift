@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 public struct SignInWithEmailAndPasswordView: View {
     
-    @ComposableArchitecture.Bindable var store: StoreOf<SignInWithEmailAndPasswordReducer>
+    @Bindable var store: StoreOf<SignInWithEmailAndPasswordReducer>
     @SwiftUI.FocusState var focusedField: SignInWithEmailAndPasswordReducer.State.Field?
     
     @SwiftUI.Namespace var animation
@@ -45,7 +45,7 @@ public struct SignInWithEmailAndPasswordView: View {
                 .padding(.horizontal)
                 .transition(.opacity)
             }
-                
+            
             HStack {
                 if store.isOtpHidden {
                     SecureField("Password", text: $store.password)
@@ -111,3 +111,4 @@ public struct SignInWithEmailAndPasswordView: View {
         reducer: { SignInWithEmailAndPasswordReducer() }
     ))
 }
+
