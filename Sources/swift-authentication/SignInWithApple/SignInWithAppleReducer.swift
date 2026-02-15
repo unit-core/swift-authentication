@@ -19,16 +19,16 @@ public struct SignInWithAppleReducer {
     @ObservableState
     public struct State: Equatable {
         
-        var status: StateStatus = .idle
+        var status: UIState = .idle
         
         public init() {}
     }
     
-    public enum StateStatus: Equatable {
+    public enum UIState: Equatable {
         case idle
         case success
         case error(SignInWithAppleError)
-        case loading
+        case processing
     }
     
     public enum Action {
@@ -43,7 +43,7 @@ public struct SignInWithAppleReducer {
         Reduce { state, action in
             switch action {
             case let .handleCompletionResult(.success(authorization)):
-                state.status = .loading
+                state.status = .processing
                 guard let authorization else {
                     state.status = .error(.invalidAuthorizationCredentialType)
                     return .none

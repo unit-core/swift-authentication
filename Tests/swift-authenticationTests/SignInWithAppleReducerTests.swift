@@ -29,7 +29,7 @@ struct SignInWithAppleReducerTests {
                 identityToken: "1".data(using: .utf8)
             ))
         ))) {
-            $0.status = .loading
+            $0.status = .processing
         }
         await store.receive(\.signInWithApple)
         await store.receive(\.signInWithAppleResult) {
@@ -121,7 +121,7 @@ struct SignInWithAppleReducerTests {
                 identityToken: "1".data(using: .utf8)
             ))
         ))) {
-            $0.status = .loading
+            $0.status = .processing
         }
         await store.receive(\.signInWithApple)
         await store.receive(\.signInWithAppleResult) {
