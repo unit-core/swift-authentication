@@ -77,22 +77,3 @@ public struct SignInWithAppleReducer {
         }
     }
 }
-
-// MARK: - Remove below
-
-import SwiftUI
-
-struct SignInWithAppleScreenView: View {
-    
-    @ComposableArchitecture.Bindable var store: StoreOf<SignInWithAppleReducer>
-    
-    var body: some View {
-        SignInWithAppleButton { (request: ASAuthorizationAppleIDRequest) in
-            // request.requestedScopes = [.email, .fullName]
-        } onCompletion: { (result: Result<ASAuthorization, any Error>) in
-            store.send(.handleCompletionResult(
-                result.map({ AppleAuthorization(authorization: $0) })
-            ))
-        }
-    }
-}
