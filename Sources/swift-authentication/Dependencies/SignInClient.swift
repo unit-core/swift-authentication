@@ -11,6 +11,7 @@ import DependenciesMacros
 @DependencyClient
 struct SignInClient: Sendable {
     var signInWithApple: @Sendable (_ identityToken: String) async throws -> Void
+    var signInWithEmailAndPassword: @Sendable (_ email: String, _ password: String) async throws -> Void
 }
 
 private enum SignInClientKey: DependencyKey {
@@ -18,7 +19,8 @@ private enum SignInClientKey: DependencyKey {
     static let liveValue = SignInClient()
 
     static let previewValue = SignInClient(
-        signInWithApple: { identityToken in }
+        signInWithApple: { identityToken in },
+        signInWithEmailAndPassword: { email , password in }
     )
     
     static let testValue: SignInClient = SignInClient()
