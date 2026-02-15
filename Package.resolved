@@ -1,5 +1,5 @@
 {
-  "originHash" : "7261c632ed0d6dabb78eeaa9b98f03dbeefa45fc34a5a27d6c0f46db82d8052f",
+  "originHash" : "27eb282f9319f3026bcc00971fe1fd6ff47e4d43ae1cb61a11a2e85bbaf537e6",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -143,6 +143,15 @@
       "state" : {
         "revision" : "3bfc408cc2d0bee2287c174da6b1c76768377818",
         "version" : "2.7.4"
+      }
+    },
+    {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/unit-core/swift-snapshot-testing",
+      "state" : {
+        "revision" : "bf8d8c27f0f0c6d5e77bff0db76ab68f2050d15d",
+        "version" : "1.18.9"
       }
     },
     {

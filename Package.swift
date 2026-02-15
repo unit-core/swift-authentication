@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "SwiftAuthentication",
     platforms: [
-        .iOS(.v16)
+        .iOS(.v17)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
@@ -18,6 +18,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/unit-core/swift-composable-architecture", exact: .init(1, 23, 1)),
         .package(url: "https://github.com/unit-core/supabase-swift", exact: .init(2, 41, 1)),
+        .package(url: "https://github.com/unit-core/swift-snapshot-testing", exact: .init(1, 18, 9)),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -34,7 +35,10 @@ let package = Package(
         ),
         .testTarget(
             name: "swift-authenticationTests",
-            dependencies: ["swift-authentication"]
+            dependencies: [
+                "swift-authentication",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ]
         ),
     ]
 )
