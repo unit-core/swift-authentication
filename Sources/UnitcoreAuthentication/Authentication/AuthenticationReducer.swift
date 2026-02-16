@@ -12,26 +12,49 @@ import Perception
 @Reducer
 public struct AuthenticationReducer {
     
+    @Dependency(\.dismiss) var dismiss
+    
     public init() {}
     
     @ObservableState
     public struct State: Equatable {
+        
+        var isDismissButtonHidden: Bool
+        var interactiveDismissDisabled: Bool
+        var isPresented: Bool
         
         var emailAndPassword: SignInWithEmailAndPasswordReducer.State = .init()
         var apple: SignInWithAppleReducer.State = .init()
         
         var welcomeText: TypewriterReducer.State = .init(fullText: "Welcome")
         
-        public init() {}
+        public init(
+            isDismissButtonHidden: Bool = false,
+            interactiveDismissDisabled: Bool = false,
+            isPresented: Bool = false
+        ) {
+            self.isDismissButtonHidden = isDismissButtonHidden
+            self.interactiveDismissDisabled = interactiveDismissDisabled
+            self.isPresented = isPresented
+        }
     }
     
-    public enum Action {
+    public enum Action: BindableAction {
+        case binding(_ action: BindingAction<State>)
+        
+        case isPresented(Bool)
+        
+        case dismiss
+        
         case emailAndPassword(SignInWithEmailAndPasswordReducer.Action)
         case apple(SignInWithAppleReducer.Action)
         case welcomeText(TypewriterReducer.Action)
     }
     
     public var body: some Reducer<State, Action> {
+        
+        BindingReducer()
+        
         Scope(state: \.emailAndPassword, action: \.emailAndPassword, child: {
             SignInWithEmailAndPasswordReducer()
         })
@@ -41,6 +64,17 @@ public struct AuthenticationReducer {
         Scope(state: \.welcomeText, action: \.welcomeText, child: {
             TypewriterReducer()
         })
+        Reduce { state, action in
+            switch action {
+            case .isPresented(let newValue):
+                state.isPresented = newValue
+                return .none
+            case .dismiss:
+                return .run { [dismiss] _ in await dismiss() }
+            default:
+                return .none
+            }
+        }
     }
 }
 

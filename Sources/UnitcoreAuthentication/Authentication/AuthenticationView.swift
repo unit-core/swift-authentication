@@ -17,28 +17,46 @@ public struct AuthenticationView: View {
     }
     
     public var body: some View {
-        VStack {
-            Spacer()
-            TypewriterView(
-                store: store.scope(state: \.welcomeText, action: \.welcomeText)
-            )
-            .font(.largeTitle)
-            .fontWeight(.bold)
-            Spacer()
-            SignInWithEmailAndPasswordView(store: store.scope(state: \.emailAndPassword, action: \.emailAndPassword))
-            Text("OR")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            SignInWithAppleView(store: store.scope(state: \.apple, action: \.apple))
-                .frame(height: 56)
+        
+        NavigationStack {
+            VStack {
+                Spacer()
+                TypewriterView(
+                    store: store.scope(state: \.welcomeText, action: \.welcomeText)
+                )
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                Spacer()
+                SignInWithEmailAndPasswordView(store: store.scope(state: \.emailAndPassword, action: \.emailAndPassword))
+                Text("OR")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                SignInWithAppleView(store: store.scope(state: \.apple, action: \.apple))
+                    .frame(height: 56)
+            }
+            .padding([.horizontal, .bottom])
+            .onTapGesture(perform: {
+                store.send(.emailAndPassword(.binding(.set(\.focusedField, nil))))
+            })
+            .onAppear(perform: {
+                store.send(.welcomeText(.start))
+            })
+            .toolbar(content: {
+                ToolbarItem(placement: .topBarTrailing, content: {
+                    if !store.isDismissButtonHidden {
+                        Button(
+                            action: {
+                                store.send(.dismiss)
+                            },
+                            label: {
+                                Image(systemName: "xmark")
+                            }
+                        )
+                    }
+                })
+            })
         }
-        .padding(.horizontal)
-        .onTapGesture(perform: {
-            store.send(.emailAndPassword(.binding(.set(\.focusedField, nil))))
-        })
-        .onAppear(perform: {
-            store.send(.welcomeText(.start))
-        })
+        .interactiveDismissDisabled(store.interactiveDismissDisabled)
     }
 }
 
