@@ -12,6 +12,8 @@ import Perception
 @Reducer
 public struct AuthenticationReducer {
     
+    public init() {}
+    
     @ObservableState
     public struct State: Equatable {
         

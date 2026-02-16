@@ -4,14 +4,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftAuthentication",
+    name: "UnitcoreAuthentication",
     platforms: [
         .iOS(.v17)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "swift-authentication",
+            name: "UnitcoreAuthentication",
             targets: ["swift-authentication"]
         ),
     ],
