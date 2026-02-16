@@ -21,7 +21,7 @@ public struct AuthenticationReducer {
         
         var isDismissButtonHidden: Bool
         var interactiveDismissDisabled: Bool
-        var isPresented: Bool
+        public var isPresented: Bool
         
         var emailAndPassword: SignInWithEmailAndPasswordReducer.State = .init()
         var apple: SignInWithAppleReducer.State = .init()
