@@ -5,7 +5,6 @@
 //  Created by Spectra Esports  on 10. 2. 2026..
 //
 
-import Supabase
 import ComposableArchitecture
 import AuthenticationServices
 

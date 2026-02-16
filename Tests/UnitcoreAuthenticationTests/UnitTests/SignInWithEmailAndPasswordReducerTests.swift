@@ -10,7 +10,7 @@ import Testing
 import ComposableArchitecture
 import Dependencies
 import AuthenticationServices
-@testable import swift_authentication
+@testable import UnitcoreAuthentication
 
 @MainActor
 struct SignInWithEmailAndPasswordReducerTests {

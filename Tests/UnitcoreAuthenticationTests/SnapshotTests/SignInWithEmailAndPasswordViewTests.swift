@@ -9,7 +9,7 @@ import SnapshotTesting
 import Testing
 import ComposableArchitecture
 
-@testable import swift_authentication
+@testable import UnitcoreAuthentication
 
 struct SnapshotConfiguration: Sendable {
     let name: String

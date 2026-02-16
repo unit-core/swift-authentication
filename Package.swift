@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "UnitcoreAuthentication",
+    name: "swift-authentication",
     platforms: [
         .iOS(.v17)
     ],
@@ -12,7 +12,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "UnitcoreAuthentication",
-            targets: ["swift-authentication"]
+            targets: ["UnitcoreAuthentication"]
         ),
     ],
     dependencies: [
@@ -23,15 +23,15 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "swift-authentication",
+            name: "UnitcoreAuthentication",
             dependencies: [
                 .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
             ]
         ),
         .testTarget(
-            name: "swift-authenticationTests",
+            name: "UnitcoreAuthenticationTests",
             dependencies: [
-                "swift-authentication",
+                "UnitcoreAuthentication",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ]
         ),
