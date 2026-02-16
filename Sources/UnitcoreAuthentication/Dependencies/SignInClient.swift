@@ -9,9 +9,9 @@ import Dependencies
 import DependenciesMacros
 
 @DependencyClient
-struct SignInClient: Sendable {
-    var signInWithApple: @Sendable (_ identityToken: String) async throws -> Void
-    var signInWithEmailAndPassword: @Sendable (_ email: String, _ password: String) async throws -> Void
+public struct SignInClient: Sendable {
+    public var signInWithApple: @Sendable (_ identityToken: String) async throws -> Void
+    public var signInWithEmailAndPassword: @Sendable (_ email: String, _ password: String) async throws -> Void
 }
 
 private enum SignInClientKey: DependencyKey {
@@ -27,7 +27,7 @@ private enum SignInClientKey: DependencyKey {
 }
 
 extension DependencyValues {
-    var signInClient: SignInClient {
+    public var signInClient: SignInClient {
         get { self[SignInClientKey.self] }
         set { self[SignInClientKey.self] = newValue }
     }
