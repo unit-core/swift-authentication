@@ -20,3 +20,16 @@ public struct TypewriterView: View {
         Text(store.displayedText)
     }
 }
+
+#Preview {
+    let store = StoreOf<TypewriterReducer>.init(
+        initialState: TypewriterReducer.State.init(
+            fullText: "Welcome back"
+        ),
+        reducer: { TypewriterReducer() }
+    )
+    TypewriterView(store: store)
+        .onAppear(perform: {
+            store.send(.start)
+        })
+}

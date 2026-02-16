@@ -34,6 +34,7 @@ public struct SignInWithEmailAndPasswordView: View {
                     .stroke(store.invalidColor, lineWidth: 1)
                     .opacity(store.uiState == .error(.invalidEmail) ? 1 : 0)
             })
+            .disabled(store.uiState == .processing)
             
             if store.uiState == .error(.invalidEmail) {
                 HStack {
@@ -70,6 +71,7 @@ public struct SignInWithEmailAndPasswordView: View {
                     .stroke(store.invalidColor, lineWidth: 1)
                     .opacity(store.uiState == .error(.invalidPassword) ? 1 : 0)
             })
+            .disabled(store.uiState == .processing)
             
             
             if store.uiState == .error(.invalidPassword) {
@@ -88,16 +90,21 @@ public struct SignInWithEmailAndPasswordView: View {
             } label: {
                 HStack {
                     Spacer()
-                    Text("Sign in")
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                    if store.uiState == .processing {
+                        ProgressView()
+                    } else {
+                        Text("Sign in")
+                            .font(.body)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.white)
+                    }
                     Spacer()
                 }
                 .frame(height: 56)
                 .background(.blue)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
+            .disabled(store.uiState == .processing)
         }
         // Synchronize store focus state and local focus state.
         .bind($store.focusedField, to: $focusedField)

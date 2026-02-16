@@ -70,6 +70,7 @@ public struct SignInWithEmailAndPasswordReducer {
                     state.uiState = .error(.invalidPassword)
                     return .none
                 }
+                state.focusedField = nil
                 state.uiState = .processing
                 return .run { [
                     email = state.email,
