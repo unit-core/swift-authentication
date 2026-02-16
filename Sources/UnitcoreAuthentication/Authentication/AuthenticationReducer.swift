@@ -44,8 +44,6 @@ public struct AuthenticationReducer {
         
         case isPresented(Bool)
         
-        case dismiss
-        
         case emailAndPassword(SignInWithEmailAndPasswordReducer.Action)
         case apple(SignInWithAppleReducer.Action)
         case welcomeText(TypewriterReducer.Action)
@@ -69,8 +67,6 @@ public struct AuthenticationReducer {
             case .isPresented(let newValue):
                 state.isPresented = newValue
                 return .none
-            case .dismiss:
-                return .run { [dismiss] _ in await dismiss() }
             default:
                 return .none
             }

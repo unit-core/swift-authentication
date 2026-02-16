@@ -46,7 +46,7 @@ public struct AuthenticationView: View {
                     if !store.isDismissButtonHidden {
                         Button(
                             action: {
-                                store.send(.dismiss)
+                                store.send(.isPresented(false))
                             },
                             label: {
                                 Image(systemName: "xmark")
