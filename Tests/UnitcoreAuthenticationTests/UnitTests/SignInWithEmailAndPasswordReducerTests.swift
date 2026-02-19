@@ -145,4 +145,56 @@ struct SignInWithEmailAndPasswordReducerTests {
             $0.uiState = .error(.signInDidFail(TestError.test))
         }
     }
+
+    @Test
+    func testSignIn_ClearsFocusedField() async throws {
+        var initialState = SignInWithEmailAndPasswordReducer.State()
+        initialState.email = "simple@example.com"
+        initialState.password = "Password123"
+        initialState.focusedField = .email
+        let store = TestStore(
+            initialState: initialState,
+            reducer: { SignInWithEmailAndPasswordReducer() },
+            withDependencies: {
+                $0.signInClient.signInWithEmailAndPassword = { _, _ in }
+            }
+        )
+        await store.send(.signIn) {
+            $0.focusedField = nil
+            $0.uiState = .processing
+        }
+        await store.receive(\.signInResult) {
+            $0.uiState = .signedIn
+        }
+    }
+
+    @Test
+    func testSignIn_WithEmptyEmail_ShouldSetInvalidEmailError() async throws {
+        let store = TestStore(
+            initialState: SignInWithEmailAndPasswordReducer.State.init(),
+            reducer: { SignInWithEmailAndPasswordReducer() },
+            withDependencies: {
+                $0.signInClient.signInWithEmailAndPassword = { _, _ in }
+            }
+        )
+        await store.send(.signIn) {
+            $0.uiState = .error(.invalidEmail)
+        }
+    }
+
+    @Test
+    func testSignIn_WithEmptyPassword_ShouldSetInvalidPasswordError() async throws {
+        var initialState = SignInWithEmailAndPasswordReducer.State()
+        initialState.email = "simple@example.com"
+        let store = TestStore(
+            initialState: initialState,
+            reducer: { SignInWithEmailAndPasswordReducer() },
+            withDependencies: {
+                $0.signInClient.signInWithEmailAndPassword = { _, _ in }
+            }
+        )
+        await store.send(.signIn) {
+            $0.uiState = .error(.invalidPassword)
+        }
+    }
 }

@@ -42,6 +42,7 @@ public struct AuthenticationView: View {
                 store.send(.welcomeText(.start))
             })
             .toolbar(content: {
+                #if os(iOS)
                 ToolbarItem(placement: .topBarTrailing, content: {
                     if !store.isDismissButtonHidden {
                         Button(
@@ -54,6 +55,7 @@ public struct AuthenticationView: View {
                         )
                     }
                 })
+                #endif
             })
         }
         .interactiveDismissDisabled(store.interactiveDismissDisabled)

@@ -5,6 +5,7 @@
 //  Created by Spectra Esports  on 15. 2. 2026..
 //
 
+#if canImport(UIKit)
 import SnapshotTesting
 import Testing
 import ComposableArchitecture
@@ -53,3 +54,4 @@ struct SignInWithEmailAndPasswordViewTests {
         )
     }
 }
+#endif
