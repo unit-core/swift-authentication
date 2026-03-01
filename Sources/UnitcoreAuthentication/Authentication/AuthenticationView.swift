@@ -42,20 +42,16 @@ public struct AuthenticationView: View {
                 store.send(.welcomeText(.start))
             })
             .toolbar(content: {
-                #if os(iOS)
-                ToolbarItem(placement: .topBarTrailing, content: {
-                    if !store.isDismissButtonHidden {
-                        Button(
-                            action: {
-                                store.send(.isPresented(false))
-                            },
-                            label: {
-                                Image(systemName: "xmark")
-                            }
-                        )
-                    }
-                })
-                #endif
+                if !store.isDismissButtonHidden {
+                    Button(
+                        action: {
+                            store.send(.isPresented(false))
+                        },
+                        label: {
+                            Image(systemName: "xmark")
+                        }
+                    )
+                }
             })
         }
         .interactiveDismissDisabled(store.interactiveDismissDisabled)

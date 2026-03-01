@@ -13,6 +13,8 @@ public struct SignInWithAppleView: View {
     
     @Bindable var store: StoreOf<SignInWithAppleReducer>
     
+    @Environment(\.colorScheme) var colorScheme
+    
     public init(store: StoreOf<SignInWithAppleReducer>) {
         self.store = store
     }
@@ -25,6 +27,7 @@ public struct SignInWithAppleView: View {
                 result.map({ AppleAuthorization(authorization: $0) })
             ))
         }
+        .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
     }
 }
 

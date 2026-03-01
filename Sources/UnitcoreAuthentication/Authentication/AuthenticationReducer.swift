@@ -13,6 +13,7 @@ import Perception
 public struct AuthenticationReducer {
     
     @Dependency(\.dismiss) var dismiss
+    @Dependency(\.signInClient.signOut) var signOut
     
     public init() {}
     
@@ -47,6 +48,9 @@ public struct AuthenticationReducer {
         case emailAndPassword(SignInWithEmailAndPasswordReducer.Action)
         case apple(SignInWithAppleReducer.Action)
         case welcomeText(TypewriterReducer.Action)
+        
+        case signOut
+        case signOutResult(Result<Void, any Error>)
     }
     
     public var body: some Reducer<State, Action> {
@@ -67,6 +71,12 @@ public struct AuthenticationReducer {
             case .isPresented(let newValue):
                 state.isPresented = newValue
                 return .none
+            case .signOut:
+                return .run { [signOut] send in
+                    await send(.signOutResult(Result {
+                        try await signOut()
+                    }))
+                }
             default:
                 return .none
             }
